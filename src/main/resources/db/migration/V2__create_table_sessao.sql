@@ -1,8 +1,8 @@
 CREATE TABLE sessao (
                         id UUID PRIMARY KEY,
                         pauta_id UUID NOT NULL,
-                        data_abertura TIMESTAMP NOT NULL,
-                        data_fechamento TIMESTAMP NOT NULL,
+                        data_abertura TIMESTAMP WITH TIME ZONE NOT NULL,
+                        data_fechamento TIMESTAMP WITH TIME ZONE NOT NULL,
 
                         CONSTRAINT fk_sessao_pauta
                             FOREIGN KEY (pauta_id)

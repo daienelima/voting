@@ -1,6 +1,7 @@
 package com.cooperative.voting.application.service;
 
 import com.cooperative.voting.domain.exception.SessaoJaExisteException;
+import com.cooperative.voting.domain.exception.SessaoNaoEncontradaException;
 import com.cooperative.voting.domain.model.Sessao;
 import com.cooperative.voting.domain.port.in.CriarSessaoUseCase;
 import com.cooperative.voting.domain.port.out.PautaRepositoryPort;
@@ -26,9 +27,7 @@ public class CriarSessaoService implements CriarSessaoUseCase {
         pautaRepository.findById(pautaId).orElseThrow();
 
         sessaoRepository.findSessaoAtivaPorPauta(pautaId)
-                .ifPresent(s -> {
-                    throw new SessaoJaExisteException();
-                });
+                .orElseThrow(SessaoNaoEncontradaException::new);
 
         Sessao sessao = Sessao.abrir(pautaId, duracaoMinutos);
 
