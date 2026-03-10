@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: cooperative-voting-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/votingdb
+    username: voting
+    password: voting
+    driver-class-name: org.postgresql.Driver
+
+  sql:
+    init:
+      mode: never
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    defer-datasource-initialization: true
+    open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org.hibernate.SQL: warn
+    org.hibernate.type.descriptor.sql: warn
+
+external:
+  cpf:
+    #base-url: ${CPF_API_BASE_URL:https://user-info.herokuapp.com/users}
+    base-url: ${CPF_API_BASE_URL:https://b059f2f3-a385-456d-b668-7977d2851b9d.mock.pstmn.io/users}
+    timeout-seconds: 3

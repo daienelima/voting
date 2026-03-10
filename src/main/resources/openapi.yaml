@@ -1,0 +1,266 @@
+openapi: 3.0.3
+info:
+  title: Cooperative Voting API
+  description: API para gerenciamento de sessões de votação cooperativa
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+
+tags:
+  - name: Pautas
+  - name: Sessões
+  - name: Votos
+
+paths:
+
+  /pautas:
+    post:
+      tags: [Pautas]
+      summary: Criar nova pauta
+      operationId: createPauta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CriarPautaRequest'
+      responses:
+        '201':
+          description: Pauta criada
+          headers:
+            Location:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PautaResponse'
+
+    get:
+      tags: [Pautas]
+      summary: Listar pautas
+      operationId: listPautas
+      responses:
+        '200':
+          description: Lista de pautas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PautaResponse'
+
+  /pautas/{pautaId}:
+    get:
+      tags: [Pautas]
+      summary: Buscar pauta por ID
+      operationId: getPautaById
+      parameters:
+        - name: pautaId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Pauta encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PautaDetalhadaResponse'
+        '404':
+          description: Pauta não encontrada
+
+  /pautas/{pautaId}/sessoes:
+    post:
+      tags: [Sessões]
+      summary: Abrir sessão de votação
+      operationId: createSessao
+      parameters:
+        - name: pautaId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AbrirSessaoRequest'
+      responses:
+        '201':
+          description: Sessão criada
+          headers:
+            Location:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessaoResponse'
+
+  /pautas/{pautaId}/sessoes/{sessaoId}:
+    get:
+      tags: [Sessões]
+      summary: Consultar sessão
+      operationId: getSessaoById
+      parameters:
+        - name: pautaId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: sessaoId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Sessão encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessaoResponse'
+        '404':
+          description: Sessão não encontrada
+
+  /pautas/{pautaId}/votos:
+    post:
+      tags: [Votos]
+      summary: Registrar voto
+      operationId: registerVoto
+      parameters:
+        - name: pautaId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrarVotoRequest'
+      responses:
+        '201':
+          description: Voto registrado
+        '400':
+          description: Requisição inválida
+        '409':
+          description: Voto duplicado ou sessão encerrada
+
+  /pautas/{pautaId}/resultado:
+    get:
+      tags: [Pautas]
+      summary: Consultar resultado
+      operationId: getResultadoByPauta
+      parameters:
+        - name: pautaId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Resultado da votação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultadoResponse'
+        '404':
+          description: Pauta não encontrada
+
+components:
+  schemas:
+    CriarPautaRequest:
+      type: object
+      required: [titulo]
+      properties:
+        titulo:
+          type: string
+        descricao:
+          type: string
+
+    AbrirSessaoRequest:
+      type: object
+      properties:
+        duracaoMinutos:
+          type: integer
+          minimum: 1
+
+    RegistrarVotoRequest:
+      type: object
+      required: [associadoId, cpf, voto]
+      properties:
+        associadoId:
+          type: string
+        cpf:
+          type: string
+          pattern: '^\d{11}$'
+        voto:
+          $ref: '#/components/schemas/TipoVoto'
+
+    PautaResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        titulo:
+          type: string
+        descricao:
+          type: string
+        dataCriacao:
+          type: string
+          format: date-time
+
+    PautaDetalhadaResponse:
+      allOf:
+        - $ref: '#/components/schemas/PautaResponse'
+        - type: object
+          properties:
+            resultado:
+              $ref: '#/components/schemas/ResultadoResponse'
+
+    SessaoResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        dataAbertura:
+          type: string
+          format: date-time
+        dataFechamento:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/StatusSessao'
+
+    ResultadoResponse:
+      type: object
+      properties:
+        totalSim:
+          type: integer
+        totalNao:
+          type: integer
+        resultado:
+          type: string
+          enum: [APROVADO, REPROVADO, EMPATE]
+
+    TipoVoto:
+      type: string
+      enum: [SIM, NAO]
+
+    StatusSessao:
+      type: string
+      enum: [OPEN, CLOSED]
