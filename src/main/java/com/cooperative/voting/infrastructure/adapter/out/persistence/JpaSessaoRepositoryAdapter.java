@@ -7,6 +7,7 @@ import com.cooperative.voting.infrastructure.adapter.out.persistence.repository.
 import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -58,7 +59,8 @@ public class JpaSessaoRepositoryAdapter implements SessaoRepositoryPort {
 
     @Override
     public List<Sessao> buscarSessoesExpiradas() {
-        return repository.findByDataFechamentoBefore(OffsetDateTime.now())
+        OffsetDateTime now = OffsetDateTime.now(ZoneId.of("America/Sao_Paulo"));
+        return repository.findByDataFechamentoBeforeAndEventoEncerramentoGeradoFalse(now)
                 .stream()
                 .map(sessaoEntityMapper::toDomain)
                 .toList();

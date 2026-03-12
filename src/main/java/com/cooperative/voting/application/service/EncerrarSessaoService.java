@@ -3,6 +3,7 @@ package com.cooperative.voting.application.service;
 import com.cooperative.voting.application.event.SessaoEncerradaEvent;
 import com.cooperative.voting.domain.exception.SessaoNaoEncontradaException;
 import com.cooperative.voting.domain.model.ResultadoVotacao;
+import com.cooperative.voting.domain.model.Sessao;
 import com.cooperative.voting.domain.port.out.OutboxEventPort;
 import com.cooperative.voting.domain.port.out.SessaoRepositoryPort;
 import com.cooperative.voting.domain.port.out.VotoRepositoryPort;
@@ -25,7 +26,7 @@ public class EncerrarSessaoService {
     }
 
     public void execute(UUID sessaoId) {
-        var sessao = sessaoRepository.findById(sessaoId)
+        Sessao sessao = sessaoRepository.findById(sessaoId)
                 .orElseThrow(SessaoNaoEncontradaException::new);
 
         ResultadoVotacao resultadoVotacao = votoRepository.contarResultado(sessaoId);
@@ -39,5 +40,8 @@ public class EncerrarSessaoService {
         );
 
         outboxEventPort.salvarEvento(event);
+
+        sessao.marcarEncerramentoGerado();
+        sessaoRepository.save(sessao);
     }
 }

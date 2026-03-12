@@ -18,5 +18,5 @@ public interface SpringDataSessaoRepository
 
     Optional<SessaoEntity> findByIdAndPautaId(UUID id, UUID pautaId);
 
-    List<SessaoEntity> findByDataFechamentoBefore(OffsetDateTime now);
+    List<SessaoEntity> findByDataFechamentoBeforeAndEventoEncerramentoGeradoFalse(OffsetDateTime now);
 }

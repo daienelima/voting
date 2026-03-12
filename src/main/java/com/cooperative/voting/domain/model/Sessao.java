@@ -1,6 +1,5 @@
 package com.cooperative.voting.domain.model;
 
-import com.cooperative.voting.domain.exception.SessaoJaFechadaException;
 import com.cooperative.voting.domain.model.enums.StatusSessao;
 import lombok.*;
 
@@ -19,6 +18,7 @@ public class Sessao {
     private OffsetDateTime dataAbertura;
     private OffsetDateTime dataFechamento;
     private StatusSessao status;
+    private boolean eventoEncerramentoGerado;
 
     public static Sessao abrir(UUID pautaId, Integer duracaoMinutos) {
 
@@ -31,17 +31,13 @@ public class Sessao {
                 pautaId,
                 agora,
                 agora.plusMinutes(duracao),
-                StatusSessao.ABERTA
+                StatusSessao.ABERTA,
+                false
         );
     }
 
-    public void fechar() {
-
-        if (this.status == StatusSessao.ENCERRADA) {
-            throw new SessaoJaFechadaException();
-        }
-
-        this.status = StatusSessao.ENCERRADA;
+    public void marcarEncerramentoGerado() {
+        this.eventoEncerramentoGerado = true;
     }
 
     public boolean estaEncerrada() {

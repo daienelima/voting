@@ -38,11 +38,17 @@ public class OutboxPublisherScheduler {
 
         for (OutboxEventEntity evento : eventos) {
 
-            kafka.send("sessao-encerrada", evento.getPayload());
+            try {
+                log.debug("Enviando evento para Kafka: {}", evento.getId());
+                kafka.send("sessao-encerrada", mapper.writeValueAsString(evento.getPayload()));
 
-            evento.setProcessed(true);
+                evento.setProcessed(true);
+                repository.save(evento);
+                log.debug("Evento {} processado com sucesso", evento.getId());
 
-            repository.save(evento);
+            } catch (Exception e) {
+                log.error("Erro ao publicar evento {}: {}", evento.getId(), e.getMessage(), e);
+            }
         }
     }
 }

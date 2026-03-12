@@ -28,4 +28,7 @@ public class SessaoEntity {
 
     @Column(name = "data_fechamento", nullable = false)
     private OffsetDateTime dataFechamento;
+
+    @Column(name = "envento_encrramento_gerado", nullable = false)
+    private boolean eventoEncerramentoGerado;
 }
