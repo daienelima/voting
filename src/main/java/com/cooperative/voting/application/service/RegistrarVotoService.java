@@ -33,6 +33,7 @@ public class RegistrarVotoService implements RegistrarVotoUseCase {
     @Override
     @Transactional
     public void execute(UUID pautaId, RegistrarVotoCommand command) {
+
         cpfValidation.validar(command.cpf());
 
         Sessao sessao = sessaoRepository.findSessaoAtivaPorPauta(pautaId)

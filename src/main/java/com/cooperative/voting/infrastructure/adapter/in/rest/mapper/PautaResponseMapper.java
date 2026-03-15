@@ -8,14 +8,12 @@ import com.yourcompany.voting.api.model.PautaResponse;
 import com.yourcompany.voting.api.model.ResultadoResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public abstract class PautaResponseMapper {
 
-    @Autowired
     protected ResultadoMapper resultadoMapper;
 
     public abstract PautaResponse toResponse(Pauta domain);

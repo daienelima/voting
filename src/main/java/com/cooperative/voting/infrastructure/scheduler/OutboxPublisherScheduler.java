@@ -1,5 +1,7 @@
 package com.cooperative.voting.infrastructure.scheduler;
 
+import com.cooperative.voting.application.event.SessaoEncerradaEvent;
+import com.cooperative.voting.infrastructure.adapter.out.messaging.SessaoEventPublisher;
 import com.cooperative.voting.infrastructure.adapter.out.persistence.entity.OutboxEventEntity;
 import com.cooperative.voting.infrastructure.adapter.out.persistence.repository.OutboxRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,18 +17,15 @@ import java.util.List;
 public class OutboxPublisherScheduler {
 
     private final OutboxRepository repository;
-    private final KafkaTemplate<String, Object> kafka;
+    private final SessaoEventPublisher publisher;
     private final ObjectMapper mapper;
 
-    public OutboxPublisherScheduler(
-            OutboxRepository repository,
-            KafkaTemplate<String, Object> kafka,
-            ObjectMapper mapper) {
-
+    public OutboxPublisherScheduler(OutboxRepository repository, SessaoEventPublisher publisher, ObjectMapper mapper) {
         this.repository = repository;
-        this.kafka = kafka;
+        this.publisher = publisher;
         this.mapper = mapper;
     }
+
 
     @Scheduled(fixedDelay = 60000)
     public void publicarEventos() {
@@ -40,10 +39,14 @@ public class OutboxPublisherScheduler {
 
             try {
                 log.debug("Enviando evento para Kafka: {}", evento.getId());
-                kafka.send("sessao-encerrada", mapper.writeValueAsString(evento.getPayload()));
 
+                SessaoEncerradaEvent event =
+                        mapper.convertValue(evento.getPayload(), SessaoEncerradaEvent.class);
+
+                publisher.publicar(event);
                 evento.setProcessed(true);
                 repository.save(evento);
+
                 log.debug("Evento {} processado com sucesso", evento.getId());
 
             } catch (Exception e) {

@@ -2,12 +2,22 @@ spring:
   application:
     name: cooperative-voting-service
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+      properties:
+        spring.json.type.mapping: event:com.cooperative.voting.application.event.SessaoEncerradaEvent
+        spring.json.trusted.packages: "*"
+        spring.json.add.type.headers: false
+
   datasource:
     url: jdbc:postgresql://localhost:5432/votingdb
     username: voting
     password: voting
     driver-class-name: org.postgresql.Driver
-
   sql:
     init:
       mode: never
@@ -40,3 +50,7 @@ external:
     #base-url: ${CPF_API_BASE_URL:https://user-info.herokuapp.com/users}
     base-url: ${CPF_API_BASE_URL:https://b059f2f3-a385-456d-b668-7977d2851b9d.mock.pstmn.io/users}
     timeout-seconds: 3
+
+kafka:
+  topics:
+    sessaoEncerrada: sessao-encerrada

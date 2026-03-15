@@ -25,12 +25,8 @@ public class JpaSessaoRepositoryAdapter implements SessaoRepositoryPort {
 
     @Override
     public Optional<Sessao> findSessaoAtivaPorPauta(UUID pautaId) {
-
         return repository
-                .findByPautaIdAndDataFechamentoAfter(
-                        pautaId,
-                        OffsetDateTime.now()
-                )
+                .findByPautaId(pautaId)
                 .map(sessaoEntityMapper::toDomain);
     }
 

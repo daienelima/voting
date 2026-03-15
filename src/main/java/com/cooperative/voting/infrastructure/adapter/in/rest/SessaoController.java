@@ -1,7 +1,6 @@
 package com.cooperative.voting.infrastructure.adapter.in.rest;
 
 import com.cooperative.voting.domain.model.Sessao;
-import com.cooperative.voting.domain.model.SessaoVotacao;
 import com.cooperative.voting.domain.port.in.BuscarSessaoUseCase;
 import com.cooperative.voting.domain.port.in.CriarSessaoUseCase;
 import com.cooperative.voting.infrastructure.adapter.in.rest.mapper.SessaoMapper;

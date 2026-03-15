@@ -3,7 +3,6 @@ package com.cooperative.voting.infrastructure.adapter.in.rest.mapper;
 import com.cooperative.voting.domain.model.ResultadoVotacao;
 import com.yourcompany.voting.api.model.ResultadoResponse;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface ResultadoMapper {

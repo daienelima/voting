@@ -29,7 +29,7 @@ public class EncerrarSessaoService {
         Sessao sessao = sessaoRepository.findById(sessaoId)
                 .orElseThrow(SessaoNaoEncontradaException::new);
 
-        ResultadoVotacao resultadoVotacao = votoRepository.contarResultado(sessaoId);
+        ResultadoVotacao resultadoVotacao = votoRepository.contarResultado(sessao.getPautaId());
 
         SessaoEncerradaEvent event = new SessaoEncerradaEvent(
                 sessaoId,

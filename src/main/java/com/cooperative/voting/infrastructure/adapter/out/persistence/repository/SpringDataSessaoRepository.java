@@ -11,10 +11,7 @@ import java.util.UUID;
 public interface SpringDataSessaoRepository
         extends JpaRepository<SessaoEntity, UUID> {
 
-    Optional<SessaoEntity> findByPautaIdAndDataFechamentoAfter(
-            UUID pautaId,
-            OffsetDateTime now
-    );
+    Optional<SessaoEntity> findByPautaId(UUID pautaId);
 
     Optional<SessaoEntity> findByIdAndPautaId(UUID id, UUID pautaId);
 

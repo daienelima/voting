@@ -2,7 +2,6 @@ package com.cooperative.voting.application.service;
 
 import com.cooperative.voting.domain.exception.PautaNaoEncontradaException;
 import com.cooperative.voting.domain.model.Sessao;
-import com.cooperative.voting.domain.model.SessaoVotacao;
 import com.cooperative.voting.domain.port.in.BuscarSessaoUseCase;
 import com.cooperative.voting.domain.port.out.SessaoRepositoryPort;
 import org.springframework.stereotype.Service;

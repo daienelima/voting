@@ -4,6 +4,7 @@ import com.cooperative.voting.domain.model.enums.StatusSessao;
 import lombok.*;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,7 +42,8 @@ public class Sessao {
     }
 
     public boolean estaEncerrada() {
-        return OffsetDateTime.now().isAfter(this.dataFechamento);
+        OffsetDateTime now = OffsetDateTime.now(ZoneId.of("America/Sao_Paulo"));
+        return now.isAfter(this.dataFechamento);
     }
 
     public StatusSessao statusAtual() {
