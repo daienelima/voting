@@ -6,7 +6,6 @@ import com.cooperative.voting.infrastructure.adapter.out.persistence.entity.Outb
 import com.cooperative.voting.infrastructure.adapter.out.persistence.repository.OutboxRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
